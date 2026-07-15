@@ -16,14 +16,42 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 HTML_REGISTER = """
 <!DOCTYPE html>
 <html>
-<head><title>Register</title></head>
-<body style="font-family: Arial; text-align: center; padding: 50px;">
-    <h2>Register</h2>
-    <form method="POST">
-        <input type="email" name="email" placeholder="Your Email" required style="padding:10px; width:300px;"><br><br>
-        <input type="password" name="password" placeholder="Password" required style="padding:10px; width:300px;"><br><br>
-        <button type="submit" style="padding: 10px 20px; font-size: 18px;">Register</button>
-    </form>
+<head>
+    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {box-sizing: border-box; margin: 0; padding: 0;}
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+      .box {
+            background: #fff; padding: 40px 30px; border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); width: 90%; max-width: 400px; text-align: center;
+        }
+        h2 {color: #667eea; margin-bottom: 25px; font-size: 28px;}
+        input {
+            width: 100%; padding: 14px; margin: 12px 0; border: 2px solid #e0e0e0;
+            border-radius: 10px; font-size: 16px; transition: 0.3s;
+        }
+        input:focus {border-color: #667eea; outline: none;}
+        button {
+            width: 100%; padding: 14px; margin-top: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;
+        }
+        button:hover {opacity: 0.9; transform: translateY(-2px);}
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Register</h2>
+        <form method="POST">
+            <input type="email" name="email" placeholder="Your Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
 </body>
 </html>
 """
@@ -31,14 +59,42 @@ HTML_REGISTER = """
 HTML_FORM = """
 <!DOCTYPE html>
 <html>
-<head><title>Fund Wallet</title></head>
-<body style="font-family: Arial; text-align: center; padding: 50px;">
-    <h1>Fund Wallet</h1>
-    <form method="POST">
-        <input type="email" name="email" placeholder="Your Email" required style="padding:10px; width:300px;"><br><br>
-        <input type="number" name="amount" placeholder="Amount" required style="padding:10px; width:300px;"><br><br>
-        <button type="submit" style="padding: 10px 20px; font-size: 18px;">Fund Wallet</button>
-    </form>
+<head>
+    <title>Fund Wallet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {box-sizing: border-box; margin: 0; padding: 0;}
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* COLOR */
+            display: flex; justify-content: center; align-items: center; height: 100vh; /* FULL SCREEN + CENTER */
+        }
+      .box {
+            background: #fff; padding: 40px 30px; border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); width: 90%; max-width: 400px; text-align: center;
+        }
+        h1 {color: #667eea; margin-bottom: 25px; font-size: 30px;}
+        input {
+            width: 100%; padding: 14px; margin: 12px 0; border: 2px solid #e0e0e0;
+            border-radius: 10px; font-size: 16px; transition: 0.3s;
+        }
+        input:focus {border-color: #667eea; outline: none;}
+        button {
+            width: 100%; padding: 14px; margin-top: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        button:hover {opacity: 0.9; transform: translateY(-2px);}
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Fund Wallet</h1>
+        <form method="POST">
+            <input type="email" name="email" placeholder="Your Email" required>
+            <input type="number" name="amount" placeholder="Enter Amount ₦" required>
+            <button type="submit">Fund Wallet</button>
+        </form>
+    </div>
 </body>
 </html>
 """
@@ -54,18 +110,11 @@ def register():
     try:
         user = supabase.auth.sign_up({"email": email, "password": password})
         user_id = user.user.id
-
-        # Saka cikin table na wallets
-        supabase.table("wallets").insert({
-            "user_id": user_id,
-            "email": email,
-            "wallet": 0
-        }).execute()
-
-        return "<h2 style='text-align:center; padding:50px;'>Registration Successful ✅<br>Wallet Balance: ₦0</h2>"
+        supabase.table("wallets").insert({"user_id": user_id, "email": email, "wallet": 0}).execute()
+        return "<h2 style='text-align:center; padding:50px; color:white;'>Registration Successful ✅<br>Wallet Balance: ₦0</h2>"
 
     except Exception as e:
-        return f"<h2 style='text-align:center; padding:50px;'>Error: {str(e)}</h2>"
+        return f"<h2 style='text-align:center; padding:50px; color:white;'>Error: {str(e)}</h2>"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -96,22 +145,18 @@ def index():
 @app.route("/webhook", methods=["POST"])
 def webhook():
     data = request.json
-
-    # Duba secret hash don tsaro
     if request.headers.get("verif-hash")!= FLW_SECRET_HASH:
         return {"status": "unauthorized"}, 401
 
     if data.get("event") == "charge.completed" and data["data"]["status"] == "successful":
         amount = data["data"]["amount"]
         email = data["data"]["customer"]["email"]
-
         try:
             wallet_data = supabase.table("wallets").select("wallet").eq("email", email).execute()
             if wallet_data.data:
                 old_balance = wallet_data.data[0]['wallet']
                 new_balance = old_balance + float(amount)
                 supabase.table("wallets").update({"wallet": new_balance}).eq("email", email).execute()
-
         except Exception as e:
             print("Error:", e)
 
