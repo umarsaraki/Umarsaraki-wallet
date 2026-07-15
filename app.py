@@ -10,8 +10,8 @@ app = Flask(__name__)
 FLW_SECRET_KEY = os.environ.get("FLW_SECRET_KEY")
 FLW_SECRET_HASH = "UMARSHOYI_SUB_0891" # Kamar yadda ka ce
 SUPABASE_URL = "https://lvlbxliuqrgyizxjmmyx.supabase.co"
-SUPABASE_SECRET_KEY = os.environ.get("SUPABASE_SECRET_KEY") # Mun fitar dashi daga code domin tsaro
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
+SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") # Mun fitar dashi daga code domin tsaro
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 HTML_REGISTER = """
 <!DOCTYPE html>
